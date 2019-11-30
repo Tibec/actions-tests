@@ -12,12 +12,5 @@ jobs:
 
     - name: Set Version name in variable
       run: |
-        @echo on
-        for /F "tokens=*" %i IN ('git describe --tags') DO SET version=%i
-        echo  %version%
-
-
-    - name: Dump steps context
-      env:
-        STEPS_CONTEXT: ${{ toJson(steps.version.outputs) }}
-      run: echo %STEPS_CONTEXT%
+        $version = git describe --tags
+        echo  $version
