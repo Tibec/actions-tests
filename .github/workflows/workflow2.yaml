@@ -5,20 +5,28 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v1
 
-    - name: Get previous tag
-      id: previoustag
-      uses: "WyriHaximus/github-action-get-previous-tag@master"
+    - name: Process version of the tag
+      id: version
+      uses: ncipollo/semantic-version-action@v1
+
+    - name: Dump steps context
       env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        STEPS_CONTEXT: ${{ toJson(steps.version.outputs) }}
+      run: echo %STEPS_CONTEXT%
+
+    - name: Dump previous tag
+      env:
+        PREVIOUS_TAG: ${{ steps.version.outputs.previous_tag }}
+      run: echo %PREVIOUS_TAG%
 
     - name: Get commit count since last tag
       id: commitCount
-      run: git rev-list ${{ steps.previoustag.outputs.tag }}..HEAD --count
+      run: git rev-list ${{ steps.version.outputs.previous_tag }}..HEAD --count
 
     - name: Dump GitHub context
       env:
