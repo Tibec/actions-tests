@@ -9,13 +9,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: 'Get previous tag'
+
+    - name: Get previous tag
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@master"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: 'Get commit count since last tag'
+    - name: Get commit count since last tag
         id: commitCount
         run: git rev-list ${{ steps.previoustag.outputs.tag }}..HEAD --count
 
