@@ -10,50 +10,14 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Process version of the tag
-      id: version
-      uses: ncipollo/semantic-version-action@v1
+    - name: Set Version name in variable
+      run: FOR /F "tokens=*" %i IN ('git describe --tags') DO SET version=%i
+
+    - name: Get commit count since last tag
+      id: commitCount
+      run: echo %version%
 
     - name: Dump steps context
       env:
         STEPS_CONTEXT: ${{ toJson(steps.version.outputs) }}
       run: echo %STEPS_CONTEXT%
-
-    - name: Dump previous tag
-      env:
-        PREVIOUS_TAG: ${{ steps.version.outputs.previous_tag }}
-      run: echo %PREVIOUS_TAG%
-
-    - name: Get commit count since last tag
-      id: commitCount
-      run: git rev-list ${{ steps.version.outputs.previous_tag }}..HEAD --count
-
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
-
-    - name: Dump job context
-      env:
-        JOB_CONTEXT: ${{ toJson(job) }}
-      run: echo "$JOB_CONTEXT"
-    
-    - name: Dump steps context
-      env:
-        STEPS_CONTEXT: ${{ toJson(steps) }}
-      run: echo "$STEPS_CONTEXT"
-    
-    - name: Dump runner context
-      env:
-        RUNNER_CONTEXT: ${{ toJson(runner) }}
-      run: echo "$RUNNER_CONTEXT"
-    
-    - name: Dump strategy context
-      env:
-        STRATEGY_CONTEXT: ${{ toJson(strategy) }}
-      run: echo "$STRATEGY_CONTEXT"
-    
-    - name: Dump matrix context
-      env:
-        MATRIX_CONTEXT: ${{ toJson(matrix) }}
-      run: echo "$MATRIX_CONTEXT"
